@@ -1,17 +1,18 @@
 package com.qf.controller;
 
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
- * @author yunwenbo
- * @create 2017-09-24 16:44
- **/
-@RestController
+ * Created by 王暄 on 2017/9/24.
+ */
+@Controller
 public class First {
-
     @RequestMapping("/index.do")
-    public static void run(){
+    @ResponseBody
+    public void run(){
         System.out.println("hello world!");
     }
+
 }
