@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qf.dao.ResDao">
+
+   <resultMap id="m1"  type="com.qf.entity.Res">
+        <result property="text" column="a"/>
+       <result property="url" column="d"/>
+        <collection property="children" javaType="com.qf.entity.Res">
+            <result property="text" column="b"/>
+            <result property="url" column="c"/>
+        </collection>
+    </resultMap>
+    <select id="findAllRes" resultMap="m1">
+        select p.text as a,p.url as d,s.text as b,s.url as c from res p
+        left join res s on s.pid=p.id
+        left join user_res ur on p.id=ur.rid
+        where ur.uid=#{uid} and p.pid=0
+    </select>
+
+    <!--所有资源-->
+    <select id="findAllResForPerm" resultType="com.qf.entity.Res">
+        select * from res
+</select>
+
+
+    <select id="findAllRess" resultType="com.qf.entity.Res" parameterType="map">
+        select * from res limit #{start},#{size2}
+    </select>
+    <select id="getCount" resultType="int">
+        select count(id) from res
+    </select>
+
+
+    <!--add resources-->
+    <insert id="addRes" parameterType="com.qf.entity.Res">
+        insert into res(text,pid,url,perms) values(#{text},#{pid},#{url},#{perms})
+    </insert>
+
+    <!--update-->
+    <update id="editRes" parameterType="com.qf.entity.Res">
+        update res set text=#{text},url=#{url},perms=#{perms} where id=#{id}
+    </update>
+
+    <!--delete-->
+    <delete id="deleteRes" parameterType="list">
+        delete from res where id IN
+        <foreach collection="list" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+
+</mapper>

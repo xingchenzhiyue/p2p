@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qf.dao.RoleDao">
+    <select id="getAllRoles" resultType="com.qf.entity.Role" parameterType="map">
+        select * from roles limit #{start},#{size2}
+    </select>
+
+    <select id="getCounts" resultType="int">
+        select count(rid) from roles
+    </select>
+
+    <insert id="addRole" parameterType="com.qf.entity.Role">
+        insert into roles(role_name) values(#{role_name})
+    </insert>
+
+    <update id="editRole" parameterType="com.qf.entity.Role">
+        update roles set name=#{role_name} where rid=#{rid}
+    </update>
+
+    <delete id="deleteRoles" parameterType="list">
+        delete from roles where rid in
+        <foreach collection="list" item="rid" open="(" separator="," close=")">
+            #{rid}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qf.dao.UserDao">
+    <select id="login" resultType="com.qf.entity.User" parameterType="com.qf.entity.User">
+        select * from users where account=#{account} and pwd=#{pwd}
+    </select>
+    
+    <select id="count" resultType="int">
+        select count(id) from users
+    </select>
+
+    <select id="getAllUsers" resultType="com.qf.entity.User" parameterType="map">
+        select * from users limit #{start},#{size2}
+    </select>
+
+    <insert id="adduser" parameterType="com.qf.entity.User">
+         insert into users (account,pwd) values(#{account},#{pwd})
+    </insert>
+
+    <!--删除一个用户-->
+    <delete id="deleteUser2" parameterType="int">
+          delete from users where id=#{id}
+    </delete>
+
+    <!--删除多个用户-->
+    <delete id="deleteUser" parameterType="list">
+        delete from users where id in
+        <foreach collection="list" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!--修改用户-->
+    <update id="editUser" parameterType="com.qf.entity.User">
+        update users set account=#{account} where id=#{id}
+    </update>
+
+
+    <!--为用户分配权限-->
+    <insert id="addUserPerm" parameterType="map" >
+        insert into user_res values
+        <foreach collection="rids" item="rid"  separator="," >
+            (#{userid},#{rid})
+        </foreach>
+    </insert>
+
+    <!--删除权限-->
+    <delete id="deletep" parameterType="int">
+        delete from user_res where uid=#{userid}
+    </delete>
+</mapper>
