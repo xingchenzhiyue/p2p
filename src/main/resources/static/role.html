@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<div id="role"></div>
+
+<div id="window_addrole" style="display: flex;align-items: center;justify-content: center; width: 400px;height:300px" class="easyui-window" data-options="closed:true,modal:true">
+
+    <form id="form_addrole" action="/addRole.do">
+        <input type="hidden" name="rid"  id="role_id"/>
+        <div>
+            <input name="role_name" type="text" class="easyui-textbox" style="width:270px;height:30px"/>
+        </div>
+        <div style="margin-top: 10px">
+            <a href="javascript:save()" class="easyui-linkbutton" style="width: 100%">保存</a>
+        </div>
+    </form>
+</div>
+<script>
+
+    function init() {
+        $("#role").datagrid({
+            pagination:true,
+            //url:"getAllRoles.do",//供应数据的服务接口
+            columns:[[
+                //定义表格的列
+                {field:"rid",checkbox:true},
+                {field:"role_name",title:"角色",width:100}
+
+            ]],
+            toolbar:[
+                //handler：指定处理函数
+                {text:"添加",iconCls:"icon-add",handler:function(){addRole();}},
+                {text:"修改",iconCls:"icon-edit",handler:function(){editRole();}},
+                {text:"删除",iconCls:"icon-remove",handler:function(){deleteRole();}}
+            ]
+        });
+        load2(1,2);
+    }
+    $(init);//页面渲染完毕再调用init()
+
+    function getCounts() {
+        var result;
+        $.ajax({
+            url:"getCounts.do",
+            async:false,
+            success:function (data2) {
+                result=data2;
+            }
+        });
+        return result;
+    }
+
+    function load2(page,size){
+        $.get("getAllRoles.do",{page:page,size:size},function (data) {
+            var json = JSON.parse(data);
+            $("#role").datagrid("loadData",json);
+            var pager = $("#role").datagrid("getPager");
+            pager.pagination({
+                total:getCounts(),
+                pageSize:size,
+                pageNumber:page,
+                pageList:[1,2,3,4,5],
+                onSelectPage:function (page,size) {
+                    load2(page,size);
+                }
+            });
+        });
+    }
+
+    function addRole(){
+        $("#form_addrole").form("clear");
+        $("#role_id").val(0);
+        //打开窗口
+        $("#window_addrole").window("open");
+    }
+
+    function editRole(){
+        var data = $("#role").datagrid("getSelected");
+        if(data){
+            $("#form_addrole").form("load",data);
+            $("#window_addrole").window("open");
+        }else{
+            $.messager.alert("系统提示信息","请选择一条记录")
+        }
+    }
+
+    function deleteRole(){
+        var data = $("#role").datagrid("getSelections");
+        var ids = new Array();
+        for(var i=0;i<data.length;i++){
+            ids[i] = data[i].rid;
+        }
+        var json = JSON.stringify(ids);
+        if(data){
+
+            $.ajax({
+                url:"deleteRoles.do",//服务接口地址
+                method:"post",//提交请求的方式
+                data:json,//提交的参数
+                contentType:"application/json",//所提交数据的格式
+                success:function(d){//回调函数
+                    //$("#role").datagrid("reload");
+                    load2(1,2);
+                }
+            });
+        }else {
+            $.messager.alert("系统提示信息","请选择一条记录");
+
+        }
+    }
+
+    function save(){
+        //异步提交数据到adduser.do
+        $("#form_addrole").form("submit",{
+            //指定回调函数
+            success:function(d){
+                //刷新
+                load2(1,2);
+                //关闭窗口
+                $("#window_addrole").window("close");
+            }
+        });
+    }
+
+</script>
+
+
+

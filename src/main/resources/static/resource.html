@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<div id="res_datagrid"></div>
+<div id="window_addres" style="align-items: center;justify-content: center; width: 400px;height:300px" class="easyui-window" data-options="closed:true,modal:true">
+    <div style="background-color: #0f74a8">
+        <form id="form_res">
+            <input type="hidden" name="id" value="0" id="res_id"/>
+            <div>
+                类别：<input name="text" type="text" class="easyui-textbox" id="form_res_text" style="width:270px;height:30px"/>
+            </div>
+            <div style="margin-top: 20px">
+                路径：<input name="url" type="text" class="easyui-textbox" id="form_res_url" style="width:270px;height:30px"/>
+            </div>
+            <div style="margin-top: 20px">
+                权限：<input name="perms" type="text" class="easyui-textbox" id="form_res_perms" style="width:270px;height:30px"/>
+            </div>
+        </form>
+    </div>
+    <div style="margin-left: 120px;margin-top: 10px">
+        <button onclick="save_res()" class="btn btn-success btn-block">保存</button>
+    </div>
+</div>
+
+<div id="window_editres" style="display: flex;align-items: center;justify-content: center; width: 400px;height:300px" class="easyui-window" data-options="closed:true,modal:true">
+    <div>
+        <form id="form_res2">
+            <%--<input type="hidden" name="id" value="0" id="res_id2"/>--%>
+            <div>
+                类别：<input name="text" type="text" class="easyui-textbox" id="form_res_text2" style="width:270px;height:30px"/>
+            </div>
+            <div style="margin-top: 20px">
+                路径：<input name="url" type="text" class="easyui-textbox" id="form_res_url2" style="width:270px;height:30px"/>
+            </div>
+            <div style="margin-top: 20px">
+                权限：<input name="perms" type="text" class="easyui-textbox" id="form_res_perms2" style="width:270px;height:30px"/>
+            </div>
+        </form>
+    </div>
+    <div style="margin-left: 120px;margin-top: 10px">
+        <button onclick="edit_res()" class="btn btn-success btn-block">修改</button>
+    </div>
+</div>
+
+<script>
+
+    function res_init() {
+        $("#res_datagrid").treegrid({
+            pagination:true,
+            idField:"id",
+            treeField:"text",
+
+            columns:[[
+                {field:"id",checkbox:true,title:"id"},
+                {field:"text",title:"名称"},
+                {field:"url",title:"路径"},
+                {field:"perms",title:"权限"}
+            ]],
+            toolbar:[
+                {text:"添加",iconCls:"icon-add",handler:function(){addRes();}},
+                {text:"修改",iconCls:"icon-edit",handler:function(){editRes();}},
+                {text:"删除",iconCls:"icon-remove",handler:function(){deleteRes();}}
+            ]
+        });
+        res_load(1,5);
+    }
+
+    function getCount3() {
+        var result;
+        $.ajax({
+            url:"getCount3.do",
+            async:false,
+            success:function (data2) {
+                result=data2;
+            }
+        });
+        return result;
+    }
+
+    function res_load(page,size) {
+
+        $.get("findAllRess.do",{page:page,size:size},function (d) {
+            var p = /\"_parentId\":0/g;
+            var data = d.replace(p, "\"root\":0");
+            // alert(data);
+            //填充数据
+            $("#res_datagrid").treegrid("loadData", JSON.parse(data));
+            var pager = $("#res_datagrid").treegrid("getPager");
+            pager.pagination({
+                total:getCount3(),
+                pageSize:size,
+                pageNumber:page,//当前页码
+                pageList:[5,10,15,20],
+                //翻页时调用
+                onSelectPage:function(page,size) {
+                    res_load(page, size);
+                }
+            })
+        });
+    }
+    $(res_init);
+
+    function addRes() {
+        $("#form_res").form("clear");
+        $("#window_addres").window("open");
+    }
+    function save_res() {
+        var text1=$("#form_res_text").val();
+        var url1=$("#form_res_url").val();
+        var perms1=$("#form_res_perms").val();
+        var parent=$("#res_datagrid").treegrid("getSelected");
+//            alert(text);
+//            alert(url);
+        $.post("addRes2.do",{text:text1,pid:parent.id,url:url1,perms:perms1},function(d){
+            //刷新列表
+            //alert(2222222);
+            //alert(d);
+            res_load(1,5);
+            $("#window_addres").window("close");
+        });
+    }
+
+    function editRes() {
+        var parent=$("#res_datagrid").treegrid("getSelected");
+        $("#form_res2").form("load",parent);
+        $("#window_editres").window("open");
+        //alert("1");
+    }
+    function edit_res() {
+        // alert("2");
+        var text=$("#form_res_text2").val();
+        var url=$("#form_res_url2").val();
+        var perms=$("#form_res_perms2").val();
+        var pid;
+        var parent=$("#res_datagrid").treegrid("getSelected");
+        //alert(parent.pid);
+        $.post("editRes.do",{text:text,id:parent.id,url:url,perms:perms,pid:parent.pid},function(d){
+            // alert(d);
+            //刷新列表
+            res_load(1,5);
+            $("#window_editres").window("close");
+        });
+    }
+
+    function deleteRes() {
+        var data = $("#res_datagrid").treegrid("getSelected");
+        if(data){
+            $.get("deleteRes.do",{id:data.id},function (d) {
+                res_load(1,5);
+            });
+        }else{
+            $.messager.alert("系统提示","请选择一条记录")
+        }
+    }
+</script>
+
+

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<div id="window_permission" class="easyui-window" style="width: 300px;height: 400px" data-options="closed:true,checkbox:true">
+    <div id="treegrid_permission"></div>
+    <div>
+        <button onclick="save_perm()" class="btn btn-success btn-block" style="width: 100%;margin-top: 20px">保存</button>
+    </div>
+</div>
+
+<div id="first"></div>
+
+
+<div id="window_adduser" style="display: flex;align-items: center;justify-content: center; width: 400px;height:300px" class="easyui-window" data-options="closed:true,modal:true">
+
+    <form id="form_adduser" action="/adduser.do">
+        <input type="hidden" name="id" value="0" id="user_id"/>
+        <div>
+            <input name="account" type="text" class="easyui-textbox" style="width:270px;height:30px"/>
+        </div>
+        <div style="margin-top: 20px">
+            <input name="pwd" type="password" class="easyui-textbox" style="width:270px;height:30px"/>
+        </div>
+        <div style="margin-left: 120px;margin-top: 10px">
+            <a href="javascript:save()" class="easyui-linkbutton">保存</a>
+        </div>
+    </form>
+
+</div>
+
+<script>
+
+    function init() {
+        $("#first").datagrid({
+            pagination:true,
+            //url:"getAllUsers.do",//供应数据的服务接口
+            columns:[[
+                //定义表格的列
+                {field:"id",checkbox:true},
+                {field:"account",title:"账号"},
+                {field:"pwd",title:"密码"}
+            ]],
+            toolbar:[
+            //handler：指定处理函数
+            //determine whether there is a user:create permisssions
+            {text:"添加",iconCls:"icon-add",handler:function(){openAdd();}},
+
+            {text:"修改",iconCls:"icon-edit",handler:function(){edituser();}},
+
+            {text:"删除",iconCls:"icon-remove",handler:function(){deleteUser();}},
+
+            {text:"分配权限",iconCls:"icon-search",handler:function(){fenpei();}}
+
+    ]
+    });
+        load2(1,2);
+    }
+
+
+    function getCount() {
+        var result;
+        $.ajax({
+            url:"getCount.do",
+            async:false,
+            type:"post",
+            success:function (data1) {
+                result = data1;
+            }
+        });
+        return result;
+    }
+
+
+    //加载数据
+    function load2(page,size){
+        $.get("getAllUsers.do",{page:page,size:size},function (data) {
+            var json = JSON.parse(data);
+            //填充数据
+            $("#first").datagrid("loadData",json);
+            //获取分页组件
+            var pager = $("#first").datagrid("getPager");
+            pager.pagination({
+                total:getCount(),
+                pageSize:size,
+                pageNumber:page,//当前页码
+                pageList:[1,2,3,4],
+                //翻页时调用
+                onSelectPage:function(page,size){
+                    load2(page,size);
+                }
+            })
+        });
+    }
+    $(init);//页面渲染完毕再调用init()
+
+    function openAdd(){
+        $("#form_adduser").form("clear");
+        $("#user_id").val(0);
+        //打开窗口
+        $("#window_adduser").window("open");
+    }
+
+
+
+    //删除多条数据
+    function deleteUser(){
+        //获取多条数据
+        var data = $("#first").datagrid("getSelections");
+        //声明一个数组,存放所有id
+        var ids=new Array();
+        for(var i=0;i<data.length;i++){
+            ids[i] = data[i].id;
+        }
+        //包装为JSON字符串
+        var json = JSON.stringify(ids);
+        //提交json数据
+        $.ajax({
+            url:"deleteUser.do",//服务接口地址
+            method:"post",//提交请求的方式
+            data:json,//提交的参数
+            contentType:"application/json",//所提交数据的格式
+            success:function(d){//回调函数
+                //$("#first").datagrid("reload");
+                load2(1,2);
+            }
+        });
+    }
+
+
+    //删除一条数据
+    function deleteUser2(){
+        //选中一条数据
+        var data = $("#first").datagrid("getSelected");
+
+        if(data){
+
+            //使用jquery异步提交
+            $.get("deleteUser2.do",{id:data.id},function(d){
+                //刷新
+                $("#first").datagrid("reload");
+            })
+        }else{
+            //弹出对话框
+            $.messager.alert("系统提示","请选择一条记录")
+        }
+
+    }
+
+    //修改用户
+    function edituser(){
+        //选中一条数据
+        var data = $("#first").datagrid("getSelected");
+
+        //console.log(data);
+        if(data){
+
+            //填充到form表单
+            $("#form_adduser").form("load",{
+                id:data.id,
+                account:data.account,
+                pwd:data.pwd
+            });
+            //弹出窗口
+            $("#window_adduser").window("open");
+        }else{
+            $.messager.alert("系统提示","请选择一条记录")
+        };
+        //关闭窗口
+
+    }
+
+    //添加用户
+    function save(){
+        //异步提交数据到adduser.do
+        $("#form_adduser").form("submit",{
+            //指定回调函数
+            success:function(d){
+                //刷新
+                //$("#first").datagrid("reload");
+                load2(1,2);
+                $("#window_adduser").window("close");
+            }
+        });
+    }
+
+    //分配权限
+
+    function fenpei(){
+        $("#treegrid_permission").treegrid({
+            //url:"findAllResForPerm.do",
+            idField:"id",
+            treeField:"text",
+            singleSelect:false,
+            columns:[[
+                {field:"id",title:"id",checkbox:true,width:50},
+                {field:"text",title:"资源名称",width:150},
+                {field:"url",title:"资源路径",width:120}
+            ]]
+        });
+        $.get("findAllResForPerm.do", function (d) {
+            var p = /\"_parentId\":0/g;
+            var data = d.replace(p, "\"root\":0");
+            var d2 = "{\"rows\":" + data + "}";
+            //填充数据
+            $("#treegrid_permission").treegrid("loadData", JSON.parse(d2));
+            $("#window_permission").window("open");
+
+        });
+
+    }
+    function save_perm() {
+        var dy = $("#first").datagrid("getSelected");
+        var data2 = $("#treegrid_permission").treegrid("getSelections");
+        var ids=new Array();
+        ids[0]=dy.id;
+        for(var i=0;i<data2.length;i++){
+            ids[i+1] = data2[i].id;
+        }
+        var json = JSON.stringify(ids);
+        // alert(json);
+        $.ajax({
+            url: "addUserPerm.do",//服务接口地址
+            method: "post",//提交请求的方式
+            data: json,//提交的参数
+            contentType: "application/json",//所提交数据的格式
+            success: function (d) {//回调函数
+                //$("#first").datagrid("reload");,
+                // alert(d);
+                $("#window_permission").window("close");
+                $.messager.alert("系统提示", "保存成功");
+            }
+        });
+    }
+</script>
+

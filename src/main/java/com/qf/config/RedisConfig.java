@@ -33,8 +33,8 @@ import java.lang.reflect.Method;
  * \* Description:
  * \
  */
-//@Configuration
-//@EnableCaching
+@Configuration
+@EnableCaching
 public class RedisConfig extends CachingConfigurerSupport {
     @Bean
     public HttpMessageConverters createConvert(){

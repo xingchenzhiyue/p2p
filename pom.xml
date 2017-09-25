@@ -173,10 +173,15 @@
 			<artifactId>shiro-aspectj</artifactId>
 			<version>${shiro.version}</version>
 		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>org.apache.shiro</groupId>-->
+			<!--<artifactId>shiro-cas</artifactId>-->
+			<!--<version>${shiro.version}</version>-->
+		<!--</dependency>-->
 		<dependency>
-			<groupId>org.apache.shiro</groupId>
-			<artifactId>shiro-cas</artifactId>
-			<version>${shiro.version}</version>
+			<groupId>org.crazycake</groupId>
+			<artifactId>shiro-redis</artifactId>
+			<version>2.4.2.1-RELEASE</version>
 		</dependency>
 
 		<!--redis-->

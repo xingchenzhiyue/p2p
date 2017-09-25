@@ -5,7 +5,8 @@ import com.qf.dao.ResDao;
 import com.qf.entity.Res;
 import com.qf.entity.User;
 import com.qf.service.ResourceService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.ibatis.annotations.Mapper;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -19,7 +20,6 @@ import java.util.Map;
 
 /**
  * \* Created with IntelliJ IDEA.
- * \* User: yunwenbo
  * \* Date: 2017/8/23
  * \* Time: 16:52
  * \* To change this template use File | Settings | File Templates.
@@ -27,9 +27,10 @@ import java.util.Map;
  * \
  */
 @Controller
+@Mapper
 public class ResController {
 
-    @Autowired
+ @Resource
     private ResDao rd;
 
     @Resource
@@ -39,10 +40,9 @@ public class ResController {
     @RequestMapping("findAllRes.do")
     @ResponseBody
     public List<Res> findAllRes(HttpSession session){
-
         //取出当前登录的用户
         User user = (User) session.getAttribute("user");
-
+        System.out.println(user+"---------------------------------");
         List<Res> res = rd.findAllRes(user.getId());
         //System.out.println(res.size()+"-----------");
         return res;

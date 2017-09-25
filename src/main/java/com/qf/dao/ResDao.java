@@ -1,6 +1,7 @@
 package com.qf.dao;
 
 import com.qf.entity.Res;
+import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -8,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
+@Mapper
 public interface ResDao {
 
     //返回所有模块
@@ -20,7 +22,6 @@ public interface ResDao {
     List<Res> findAllRess(Map<String, Integer> map);
     int getCount();
 
-
     //为用户增加权限
     void addUserPerm(ArrayList<Integer> urids);
 
@@ -29,8 +30,6 @@ public interface ResDao {
     //edit res
     void editRes(Res res);
     //delete res
-
     void deleteRes(ArrayList<Integer> ids);
-
 
 }

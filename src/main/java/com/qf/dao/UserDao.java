@@ -1,6 +1,7 @@
 package com.qf.dao;
 
 import com.qf.entity.User;
+import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
+@Mapper
 public interface UserDao {
 
     //登录

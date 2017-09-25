@@ -1,6 +1,7 @@
 package com.qf.dao;
 
 import com.qf.entity.Role;
+import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -8,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
+@Mapper
 public interface RoleDao {
 
     //获取全部角色信息

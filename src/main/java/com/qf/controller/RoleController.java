@@ -2,6 +2,7 @@ package com.qf.controller;
 
 import com.qf.dao.RoleDao;
 import com.qf.entity.Role;
+import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +16,6 @@ import java.util.Map;
 
 /**
  * \* Created with IntelliJ IDEA.
- * \* User: yunwenbo
  * \* Date: 2017/8/24
  * \* Time: 14:37
  * \* To change this template use File | Settings | File Templates.
@@ -23,6 +23,7 @@ import java.util.Map;
  * \
  */
 @Controller
+@Mapper
 public class RoleController {
 
     @Resource

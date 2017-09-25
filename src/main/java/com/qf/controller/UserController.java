@@ -4,6 +4,7 @@ import com.qf.dao.UserDao;
 import com.qf.entity.User;
 import com.qf.service.UserResService;
 import com.qf.util.SecurityUtil;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -11,6 +12,7 @@ import org.apache.shiro.subject.Subject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
@@ -22,7 +24,6 @@ import java.util.Map;
 
 /**
  * \* Created with IntelliJ IDEA.
- * \* User: yunwenbo
  * \* Date: 2017/8/22
  * \* Time: 14:42
  * \* To change this template use File | Settings | File Templates.
@@ -30,6 +31,7 @@ import java.util.Map;
  * \
  */
 @Controller
+@Mapper
 public class UserController {
     @Resource
     private UserDao ud;
@@ -43,10 +45,8 @@ public class UserController {
     }
     @RequestMapping("login.do")
     public String login(User user, HttpSession session){
-        System.out.println(user);
         String s = SecurityUtil.md5Encrpt(user.getPwd());
         user.setPwd(s);
-
         //主体
         Subject subject = SecurityUtils.getSubject();
         //令牌
@@ -54,12 +54,13 @@ public class UserController {
         subject.login(token);
 //        PrincipalMap principal = subject.getPrincipal();
         user.setId(39);
+        System.out.println(user);
 //
 //        //will the user into shiro session
         session.setAttribute("user",ud.login(user));
 
        // System.out.println(user);
-        return "main";
+        return "main.html";
     }
 
 //    login out
@@ -81,12 +82,14 @@ public class UserController {
         //System.out.println(user.getPwd());
         String s = SecurityUtil.md5Encrpt(user.getPwd());
         user.setPwd(s);
-
         User u = ud.login(user);
         if(u != null) {
             session.setAttribute("user", u);
+            return "redirect:main.html";
+        }else{
+            return "redirect:login.html";
         }
-        return "main";
+
     }
 
     @RequestMapping("getAllUsers.do")
@@ -160,7 +163,6 @@ public class UserController {
             e.printStackTrace();
             return "failure";
         }
-
     }
 
 
