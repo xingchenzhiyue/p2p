@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <link rel="stylesheet" href="../static/css/icon.css"/>
+    <link rel="stylesheet" href="../static/css/easyui.css"/>
+    <script src="../static/js/jquery.js"></script>
+    <script type="text/javascript" src="../static/js/easyui.js"></script>
+    <script type="text/javascript" src="../static/js/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="../static/ckeditor/ckeditor.js"></script>
+    <script>
+        function init(){
+            $("#tree_left").tree({
+                onClick:function(node){
+                    //判断 指定名称的tab是否存在
+                    var isHad = $("#work").tabs("exists",node.text);
+                    //存在就打开
+                    if(isHad){
+                        $("#work").tabs("select",node.text);
+                    }else{
+                        //否则就新建
+                        $("#work").tabs("add",{
+                            title:node.text,
+                            closable:"true",
+                            href:node.url//把目标页面的代码异步加载到当前页面
+                        });
+                    }
+                }
+            });
+        }
+        $(init);
+    </script>
+</head>
+<body>
+
+
+
+<div class="easyui-layout" style="width: 100%;height: 100%">
+
+    <div data-options="region:'north'" style="width: 100%;height: 150px;background-color: #555">
+        <div style="margin-top: 10px;margin-right: 10px;text-align: right">
+            <a href="/loginOut.do" style="color:white; text-decoration: none">退出</a>
+        </div>
+    </div>
+    <div data-options="region:'west'" style="width: 20%;height: 100%;background-color: yellow">
+        <ul id="tree_left" class="easyui-tree" data-options="url:'findAllRes.do'"></ul>
+    </div>
+    <div id="work" data-options="region:'center'" class="easyui-tabs"></div>
+</div>
+
+
+</body>
+</html>
