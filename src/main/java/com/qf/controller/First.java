@@ -14,6 +14,7 @@ public class First {
     public void run(){
         System.out.println("hello world!");
         System.out.println("nihao");
+        System.out.println("wawa");
     }
 
 }
