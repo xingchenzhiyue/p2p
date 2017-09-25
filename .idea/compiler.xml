@@ -7,10 +7,14 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="p2p" />
+        <module name="portal" />
+        <module name="restful" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="p2p" target="1.8" />
+      <module name="portal" target="1.8" />
+      <module name="restful" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

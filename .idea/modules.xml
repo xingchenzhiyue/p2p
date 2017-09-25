@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/p2p.iml" filepath="$PROJECT_DIR$/p2p.iml" />
+      <module fileurl="file://$PROJECT_DIR$/portal/portal.iml" filepath="$PROJECT_DIR$/portal/portal.iml" />
+      <module fileurl="file://$PROJECT_DIR$/restful/restful.iml" filepath="$PROJECT_DIR$/restful/restful.iml" />
     </modules>
   </component>
 </project>
