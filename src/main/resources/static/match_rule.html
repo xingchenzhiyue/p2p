@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="css/icon.css"/>
+    <link rel="stylesheet" href="css/easyui.css"/>
+    <link rel="stylesheet" href="css/bootstrap.css"/>
+    <script src="js/jquery.js"></script>
+    <script type="text/javascript" src="js/easyui.js"></script>
+    <script type="text/javascript" src="js/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="ckeditor/ckeditor.js"></script>
+    <script type="text/javascript">
+    	$('#cc').combobox({
+		formatter:function(row){
+			return row.text;
+		}
+	});
+    </script>
+</head>
+<body>
+<div class="easyui-layout" style="width: 100%;height: 100%">
+	<div data-options="region:'north'" style="width: 100%;height: 10%;background-color: #8080FF;display: flex;align-items: center;justify-content: center;">
+		<h3 style="color: white">撮合规则设置</h3>
+	</div>
+	<div data-options="region:'center'"  style="width: 100%;height: 90%;display: flex;align-items: flex-start;justify-content: center;">
+		<div style="width: 50%;height: 100%;margin-top: 10px">
+			<div style="margin-bottom: 30px">
+				<form method="post" action="mixmoney.do">
+					基本规则设置&nbsp&nbsp&nbsp
+					<a href="#" class="easyui-linkbutton">确认更新</a>
+					<br/><hr style="height:1px;border:none;border-top:1px solid #555555;" />
+					回款复投&nbsp&nbsp&nbsp最小金额
+					<input type="text" name="mixmoney" style="width: 50px" />元<br/><br/>
+					拆分规则&nbsp&nbsp&nbsp阶梯拆分规则&nbsp&nbsp&nbsp
+					<a href="#">查看</a>&nbsp&nbsp&nbsp
+					<a href="#">修改</a>
+				</form>
+			</div>
+			<div style="margin-bottom: 30px">
+				系统时间设置&nbsp&nbsp&nbsp
+				<a href="#" class="easyui-linkbutton">确认更新</a>
+				<br/><hr style="height:1px;border:none;border-top:1px solid #555555;" />
+				T日交易统计时间点&nbsp&nbsp&nbsp
+				<input type="time" name="t_time">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+				自动撮合时间<input style="width: 70px" type="time" name="m_time">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+            	自动确认匹配结果时间<input style="width: 70px" type="time" name="am_time">
+        	</div>
+        	<div>
+            	权重规则设置&nbsp&nbsp&nbsp
+            	<a href="#" class="easyui-linkbutton">确认更新</a>
+            	<br/><hr style="height:1px;border:none;border-top:1px solid #555555;" />
+            	类别选择<input id="cc" style="width: 100px" url="#" valueField="id" textFiele="text" />
+            	&nbsp&nbsp&nbsp<a href="#" class="easyui-linkbutton">查询</a>
+            	&nbsp&nbsp&nbsp<a href="#" class="easyui-linkbutton">添加类型</a>
+            </div>
+		</div>
+	</div>
+</div>
+</body>
+</html>
