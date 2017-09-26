@@ -13,10 +13,12 @@
         </collection>
     </resultMap>
     <select id="findAllRes" resultMap="m1">
-        select p.text as a,p.url as d,s.text as b,s.url as c from res p
-        left join res s on s.pid=p.id
-        left join user_res ur on p.id=ur.rid
-        where ur.uid=#{uid} and p.pid=0
+        SELECT p.text as a,p.url as d,s.text as b,s.url as c
+        FROM res p
+        LEFT JOIN res s ON s.pid=p.id
+		LEFT JOIN role_res rr on rr.id=p.id
+		LEFT JOIN user_role ur on ur.rid=rr.rid
+        where ur.id=#{uid} and p.pid=0
     </select>
 
     <!--所有资源-->

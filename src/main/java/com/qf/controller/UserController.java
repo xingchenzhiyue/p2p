@@ -65,9 +65,10 @@ public class UserController {
 
 //    login out
     @RequestMapping("loginOut.do")
-    public void loginOut(){
+    public String loginOut(){
         Subject subject = SecurityUtils.getSubject();
         subject.logout();
+        return "redirect:login.html";
     }
 
 //    no permission to access
